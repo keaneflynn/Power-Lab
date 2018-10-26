@@ -34,7 +34,7 @@ CleanDFS_Data <- ModDFS_Data %>%
   group_by(objects) %>%
   summarise(mean = mean(Z)) %>%
   mutate(DFS = abs(mean - 45.9412096)) %>%
-  select(objects, DFS)
+  select(objects, DFS) 
 CleanDFS_Data 
 ```
 # Calculating averages
