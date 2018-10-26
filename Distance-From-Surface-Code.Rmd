@@ -1,0 +1,18 @@
+---
+title: "Distance-From-Surface-Code"
+author: "Keane Flynn"
+date: "10/25/2018"
+output: html_document
+---
+
+# Load Packages
+```{r}
+library(tidyverse)
+library(dplyr)
+library(ggplot2)
+```
+
+# Import Dataset
+```{r}
+readr::read_csv("Elder_RockRose_11June2018_Part1.csv", header = TRUE)
+```
