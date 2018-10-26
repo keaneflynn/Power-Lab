@@ -207,7 +207,7 @@ ModDFS_Data</code></pre>
   group_by(objects) %&gt;%
   summarise(mean = mean(Z)) %&gt;%
   mutate(DFS = abs(mean - 45.9412096)) %&gt;%
-  select(objects, DFS)
+  select(objects, DFS) 
 CleanDFS_Data </code></pre>
 <pre><code>## # A tibble: 24 x 2
 ##    objects                     DFS
