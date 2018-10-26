@@ -19,14 +19,42 @@ readr::read_csv("Elder_RockRose_11June2018_Part1.csv", skip = 2,
                   col_names = c("objects", "events", "timecode", "time_sec", "X", "Y", "Z", "PLD_error", "re_projection_error", "nearest_camera_distance"))
 DistanceFromSurface_Data
 ```
+# Adjusting Data
+```{r}
+ModDFS_Data <- DistanceFromSurface_Data %>%
+  arrange(objects, time_sec) %>%
+  select(objects, events, time_sec, Z) %>%
+  filter(!grepl("^Length.*", events)) 
+ModDFS_Data
+```
 # Clean the Data
 ```{r}
-CleanDFS_Data <- DistanceFromSurface_Data %>%
+CleanDFS_Data <- ModDFS_Data %>%
   arrange(objects, time_sec) %>%
-  select(objects, events, time_sec, X, Y, Z) %>%
-  filter(!grepl("^Length.*", events)) %>%
   group_by(objects) %>%
-  summarise(mean = mean(Z))
+  summarise(mean = mean(Z)) %>%
+  mutate(DFS = abs(mean - 45.9412096)) %>%
+  select(objects, DFS)
 CleanDFS_Data 
-ggplot(CleanDFS_Data, aes(objects, mean)) + geom_point() + geom_hline(yintercept = 45.94) 
+```
+# Calculating averages
+```{r}
+AvgDFS <- CleanDFS_Data %>%
+  filter(!objects == "Surface_Shots 16") %>%
+  summarise(AvgDFS = mean(DFS))
+AvgDFS
+```
+
+# Plot the Data
+```{r}
+ggplot(CleanDFS_Data, aes(objects, DFS)) + 
+  geom_point() + 
+  geom_hline(yintercept = 0, col = "Blue") + 
+  theme(axis.text.x = element_blank()) + 
+  scale_y_reverse() + 
+  geom_hline(yintercept = mean(AvgDFS$AvgDFS), linetype = "dashed") + 
+  annotate("text", x = 8, y = 40, label = "Average DFS = 36.7 cm") +
+  xlab("Individual During Subsample") +
+  ylab("DFS (Distance From Surface)") +
+  ggtitle("Average Distance From Surface (DFS) - June 11 2018 Elder Rock Rose")
 ```
