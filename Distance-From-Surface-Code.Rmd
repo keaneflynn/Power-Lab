@@ -14,5 +14,19 @@ library(ggplot2)
 
 # Import Dataset
 ```{r}
-readr::read_csv("Elder_RockRose_11June2018_Part1.csv", header = TRUE)
+DistanceFromSurface_Data <-
+readr::read_csv("Elder_RockRose_11June2018_Part1.csv", skip = 2,
+                  col_names = c("objects", "events", "timecode", "time_sec", "X", "Y", "Z", "PLD_error", "re_projection_error", "nearest_camera_distance"))
+DistanceFromSurface_Data
+```
+# Clean the Data
+```{r}
+CleanDFS_Data <- DistanceFromSurface_Data %>%
+  arrange(objects, time_sec) %>%
+  select(objects, events, time_sec, X, Y, Z) %>%
+  filter(!grepl("^Length.*", events)) %>%
+  group_by(objects) %>%
+  summarise(mean = mean(Z))
+CleanDFS_Data 
+ggplot(CleanDFS_Data, aes(objects, mean)) + geom_point() + geom_hline(yintercept = 45.94) 
 ```
